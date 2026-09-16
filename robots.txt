@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://nexauraconsultant.co.uk/sitemap.xml
