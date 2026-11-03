@@ -18,22 +18,22 @@ body{background:var(--night);color:var(--ivory);font-family:var(--f-body);overfl
 .bars.open::before,.bars.open::after{height:0}
 .layer{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding-block:10vh;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));z-index:4;pointer-events:none}
 .card{max-width:46rem;display:flex;flex-direction:column;gap:14px;align-items:center;opacity:0;transform:translateY(12px);transition:opacity 1s ease,transform 1s ease}
-.card.on{opacity:1;transform:none}
+.card.on{opacity:1;transform:none;pointer-events:auto}
 .eyebrow{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold)}
 .big{font-family:var(--f-display);font-weight:700;font-size:clamp(2.2rem,8vw,5.2rem);line-height:1;margin:0;text-wrap:balance;background:linear-gradient(180deg,var(--gold-soft),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
 .mid{font-family:var(--f-display);font-style:italic;font-size:clamp(1.3rem,4vw,2.2rem);margin:0;color:var(--ivory);text-wrap:balance}
 .small{color:var(--dim);max-width:40ch;margin:0}
-#start{pointer-events:auto}
+#startLayer{align-items:end;padding-bottom:12vh}
 .btn{font:700 15px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--night);background:linear-gradient(180deg,var(--gold-soft),var(--gold));border:0;border-radius:999px;padding:16px 30px;cursor:pointer;box-shadow:0 0 40px rgba(217,178,95,.35)}
 .btn:focus-visible{outline:2px solid var(--ivory);outline-offset:4px}
 .ghost{background:transparent;color:var(--gold);border:1px solid var(--gold);box-shadow:none}
-.scenes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:min(60rem,100%);pointer-events:auto}
+.scenes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:min(60rem,100%)}
 @media (max-width:720px){.scenes{grid-template-columns:minmax(0,1fr)}}
 .scene{border:1px solid rgba(217,178,95,.35);background:rgba(16,19,31,.72);backdrop-filter:blur(6px);border-radius:14px;padding:18px;text-align:left;min-width:0}
 .scene .n{font-family:var(--f-display);color:var(--gold);font-size:13px;letter-spacing:.3em}
 .scene h3{font-family:var(--f-display);font-size:1.3rem;margin:6px 0}
 .scene p{margin:0;color:var(--dim);font-size:14px}
-#final{pointer-events:auto}
+
 .contact{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
 .mail{font-family:var(--f-body);font-size:15px;color:var(--ivory);user-select:all;border-bottom:1px dashed var(--gold)}
 .demo{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:6;display:flex;gap:6px;align-items:center;font-size:12px;color:var(--dim)}
@@ -50,7 +50,7 @@ body{background:var(--night);color:var(--ivory);font-family:var(--f-body);overfl
   <select id="who"></select>
 </label>
 
-<div class="layer"><div class="card on" id="start">
+<div class="layer" id="startLayer"><div class="card on" id="start">
   <span class="eyebrow">A private invitation</span>
   <p class="mid" id="startFor"></p>
   <button class="btn" id="go" type="button">Open your invitation</button>
@@ -177,7 +177,7 @@ function loop(now){
   requestAnimationFrame(loop);
   const t=now/1000;
   dust.rotation.y=t*.01;dust.position.y=Math.sin(t*.2)*.3;
-  if(phase==="idle"){ticket.rotation.set(Math.sin(t*.5)*.15,t*.35,Math.sin(t*.3)*.05);camera.position.z=14}
+  if(phase==="idle"){ticket.rotation.set(Math.sin(t*.5)*.15,t*.35,Math.sin(t*.3)*.05);ticket.position.y=1.4;ticket.scale.setScalar(1);camera.position.z=14}
   else{
     const e=(now-t0)/1000;
     // dolly in, then ticket spins and settles facing camera, then drifts back for scenes
