@@ -1,0 +1,217 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><style>body{margin:0}[hidden]{display:none!important}</style><title>Nexaura Premiere Invite</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Manrope:wght@400;500;700&display=swap">
+<style>
+/* Layout: full-screen 3D stage (golden ticket in a dust-lit void) with timed title cards layered on top, ending in a call-to-action card. Single dark cinematic look by design. */
+:root{
+  --night:#07080f; --night-2:#10131f; --gold:#d9b25f; --gold-soft:#f1dca4; --ivory:#f4efe4; --dim:#9a97a6;
+  --f-display:"Bodoni Moda",Didot,"Times New Roman",serif;
+  --f-body:"Manrope",ui-sans-serif,system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--night);color:var(--ivory);font-family:var(--f-body);overflow:hidden}
+#stage{position:fixed;inset:0;width:100%;height:100%;display:block}
+.vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.75) 100%)}
+.bars::before,.bars::after{content:"";position:fixed;left:0;right:0;height:7vh;background:#000;z-index:3;transition:height 1.2s ease}
+.bars::before{top:0}.bars::after{bottom:0}
+.bars.open::before,.bars.open::after{height:0}
+.layer{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding-block:10vh;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));z-index:4;pointer-events:none}
+.card{max-width:46rem;display:flex;flex-direction:column;gap:14px;align-items:center;opacity:0;transform:translateY(12px);transition:opacity 1s ease,transform 1s ease}
+.card.on{opacity:1;transform:none}
+.eyebrow{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold)}
+.big{font-family:var(--f-display);font-weight:700;font-size:clamp(2.2rem,8vw,5.2rem);line-height:1;margin:0;text-wrap:balance;background:linear-gradient(180deg,var(--gold-soft),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.mid{font-family:var(--f-display);font-style:italic;font-size:clamp(1.3rem,4vw,2.2rem);margin:0;color:var(--ivory);text-wrap:balance}
+.small{color:var(--dim);max-width:40ch;margin:0}
+#start{pointer-events:auto}
+.btn{font:700 15px var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--night);background:linear-gradient(180deg,var(--gold-soft),var(--gold));border:0;border-radius:999px;padding:16px 30px;cursor:pointer;box-shadow:0 0 40px rgba(217,178,95,.35)}
+.btn:focus-visible{outline:2px solid var(--ivory);outline-offset:4px}
+.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold);box-shadow:none}
+.scenes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:min(60rem,100%);pointer-events:auto}
+@media (max-width:720px){.scenes{grid-template-columns:minmax(0,1fr)}}
+.scene{border:1px solid rgba(217,178,95,.35);background:rgba(16,19,31,.72);backdrop-filter:blur(6px);border-radius:14px;padding:18px;text-align:left;min-width:0}
+.scene .n{font-family:var(--f-display);color:var(--gold);font-size:13px;letter-spacing:.3em}
+.scene h3{font-family:var(--f-display);font-size:1.3rem;margin:6px 0}
+.scene p{margin:0;color:var(--dim);font-size:14px}
+#final{pointer-events:auto}
+.contact{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
+.mail{font-family:var(--f-body);font-size:15px;color:var(--ivory);user-select:all;border-bottom:1px dashed var(--gold)}
+.demo{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:6;display:flex;gap:6px;align-items:center;font-size:12px;color:var(--dim)}
+.demo select{font:inherit;color:var(--ivory);background:var(--night-2);border:1px solid #2a2e44;border-radius:6px;padding:4px 6px}
+.replay{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:max(14px,env(safe-area-inset-left,0px));z-index:6;font:500 12px var(--f-body);color:var(--dim);background:none;border:0;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
+</style></head><body>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+<div class="vignette"></div>
+<div class="bars" id="bars"></div>
+
+<label class="demo">Preview for
+  <select id="who"></select>
+</label>
+
+<div class="layer"><div class="card on" id="start">
+  <span class="eyebrow">A private invitation</span>
+  <p class="mid" id="startFor"></p>
+  <button class="btn" id="go" type="button">Open your invitation</button>
+  <p class="small">Turn your sound on. Takes 40 seconds.</p>
+</div></div>
+
+<div class="layer"><div class="card" id="c1"><span class="eyebrow">Nexaura Consultant presents</span></div></div>
+<div class="layer"><div class="card" id="c2"><h1 class="big" id="bizName"></h1><p class="mid" id="tagline"></p></div></div>
+<div class="layer"><div class="card" id="c3"><span class="eyebrow">Now showing in three scenes</span>
+  <div class="scenes" id="scenes"></div></div></div>
+<div class="layer"><div class="card" id="final">
+  <span class="eyebrow">Your seat is reserved</span>
+  <h2 class="big" style="font-size:clamp(1.9rem,6vw,3.6rem)">Book your private screening</h2>
+  <p class="small" id="finalLine">A free 15-minute demo, built around your business. Reply to the email or write to us:</p>
+  <div class="contact"><span class="mail">nexauraconsultant@gmail.com</span><button class="btn ghost" id="copy" type="button">Copy email</button></div>
+  <p class="small">Gurdit Singh · Nexaura Consultant Ltd · The Winning Box, 27-37 Station Rd, Hayes UB3 4DX · <a href="https://nexauraconsultant.co.uk" target="_blank" rel="noopener" style="color:var(--gold)">nexauraconsultant.co.uk</a></p>
+</div></div>
+<button class="replay" id="replay" type="button" hidden>Replay</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const LEADS={
+  "moeen-and-co-solicitors":{name:"Moeen & Co.",full:"Moeen & Co. Solicitors",tag:"in The Firm That Never Sleeps",scenes:[
+    ["The 3am Enquiry","Someone needs criminal defence at 3am. An AI assistant answers instantly, takes the details and alerts your duty solicitor."],
+    ["Paperwork, Solved","Visa and sponsor licence clients upload passports and documents to one secure link. No more email chasing."],
+    ["The Neighbours","We're just down the corridor at The Winning Box. Coffee and a demo, any day you like."]]},
+  "ipm-accountants":{name:"IPM Accountants",full:"IPM Accountants",tag:"in The Paperless Season",scenes:[
+    ["Receipts, Delivered","Clients snap a receipt on their phone and AI files it straight into their books. No more carrier bags of paper."],
+    ["No More Chasing","Automatic, friendly reminders before every VAT and self-assessment deadline, so your team stops chasing."],
+    ["The Welcome","New clients onboard through one link: ID checks, engagement letter and e-signature, done in minutes."]]},
+  "karma-lounge":{name:"Karma Lounge",full:"Karma Lounge",tag:"in A Table for Every Night",scenes:[
+    ["Order Direct","Takeaway orders straight from thekarmalounge.co.uk, so you keep the margin the delivery apps take."],
+    ["Tap the Table","A tap-to-order tag on each table: guests see the menu, order and pay from their phone."],
+    ["The Regulars","On a quiet Tuesday, one message brings your regulars back with a tailored offer."]]},
+  "kaniz-restaurant-heathrow":{name:"Kaniz",full:"Kaniz Restaurant Heathrow",tag:"in Dinner Near Departures",scenes:[
+    ["Hotel Guests, Found","Travellers in the Bath Road hotels search for dinner. Your ordering page makes sure they find Kaniz."],
+    ["Order Direct","Collection and delivery orders come straight to you, with no app commission."],
+    ["Five Stars, One Tap","A tap-to-review tag on every table turns happy diners into Google reviews."]]},
+  "lakin-and-co":{name:"Lakin & Co",full:"Lakin & Co",tag:"in The Viewing at Midnight",scenes:[
+    ["Instant Replies","Every Rightmove and website enquiry gets a helpful reply in seconds, day or night."],
+    ["Viewings, Booked","Buyers and tenants pick a viewing slot themselves, straight into your diary."],
+    ["The Board That Talks","A tap tag on your For Sale boards opens the full listing on any passer-by's phone."]]},
+  "lash-amore":{name:"Lash Amore",full:"Lash Amore Ltd",tag:"in Every Lash Booked",scenes:[
+    ["The Booking Wall","Clients book treatments online at 11pm, with deposits, so no-shows stop costing you."],
+    ["The Academy","Your lash training courses on their own page: dates, places left, pay to book."],
+    ["One Tap, Five Stars","A tap-to-review tag at your counter turns happy clients into Google reviews."]]},
+  "jinli-chinese-restaurant":{name:"Jinli",full:"Jinli Chinese Restaurant",tag:"in The Sichuan Takeover",scenes:[
+    ["Found on Google","Your own menu website, so people searching for Sichuan in Uxbridge find you first."],
+    ["Order Direct","Customers order from your site and you keep the money the apps would take."],
+    ["Tap the Table","Tap-to-order tags on every table: menu, order and pay from their phone."]]}
+};
+const $=id=>document.getElementById(id);
+const fromHash=location.hash.slice(1);
+let key=LEADS[fromHash]?fromHash:Object.keys(LEADS)[0];
+if(LEADS[fromHash])document.querySelector(".demo").hidden=true;
+$("who").innerHTML=Object.entries(LEADS).map(([k,v])=>`<option value="${k}" ${k===key?"selected":""}>${v.full}</option>`).join("");
+addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(LEADS[h]){key=h;applyLead()}});
+
+function applyLead(){
+  const L=LEADS[key];
+  $("startFor").textContent="for "+L.full;
+  $("bizName").textContent=L.name;
+  $("tagline").textContent=L.tag;
+  $("scenes").innerHTML=L.scenes.map((s,i)=>`<div class="scene"><div class="n">SCENE ${["I","II","III"][i]}</div><h3></h3><p></p></div>`).join("");
+  [...$("scenes").children].forEach((el,i)=>{el.querySelector("h3").textContent=L.scenes[i][0];el.querySelector("p").textContent=L.scenes[i][1]});
+  drawTicket(L);
+}
+
+/* ---------- 3D ---------- */
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const canvas=$("stage");
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0x07080f,1);
+const scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(0x07080f,.06);
+const camera=new THREE.PerspectiveCamera(40,1,.1,100);
+camera.position.set(0,0,14);
+
+scene.add(new THREE.AmbientLight(0x404060,.8));
+const key1=new THREE.SpotLight(0xffe2a0,2.2,40,.5,.6);key1.position.set(4,6,8);scene.add(key1);
+const rim=new THREE.PointLight(0x6a7bff,1.2,30);rim.position.set(-6,-3,-4);scene.add(rim);
+
+// ticket texture
+const tc=document.createElement("canvas");tc.width=1024;tc.height=512;
+const tctx=tc.getContext("2d");
+const tex=new THREE.CanvasTexture(tc);
+function drawTicket(L){
+  const g=tctx.createLinearGradient(0,0,1024,512);g.addColorStop(0,"#f3dfa6");g.addColorStop(.5,"#d4a94f");g.addColorStop(1,"#8c6a26");
+  tctx.fillStyle=g;tctx.fillRect(0,0,1024,512);
+  tctx.strokeStyle="rgba(40,28,8,.55)";tctx.lineWidth=6;tctx.strokeRect(24,24,976,464);
+  tctx.setLineDash([10,12]);tctx.beginPath();tctx.moveTo(760,40);tctx.lineTo(760,472);tctx.stroke();tctx.setLineDash([]);
+  tctx.fillStyle="#2a1d06";tctx.textAlign="center";
+  tctx.font="600 28px Manrope, sans-serif";tctx.fillText("ADMIT ONE  ·  PRIVATE SCREENING",392,98);
+  let size=96;tctx.font=`700 ${size}px "Bodoni Moda", serif`;
+  while(tctx.measureText(L.name).width>660&&size>40){size-=4;tctx.font=`700 ${size}px "Bodoni Moda", serif`}
+  tctx.fillText(L.name,392,270);
+  tctx.font="italic 500 34px \"Bodoni Moda\", serif";tctx.fillText(L.tag,392,340);
+  tctx.font="600 22px Manrope, sans-serif";tctx.fillText("NEXAURA CONSULTANT  ·  HAYES, LONDON",392,420);
+  tctx.save();tctx.translate(880,256);tctx.rotate(-Math.PI/2);tctx.font="700 30px Manrope, sans-serif";tctx.fillText("SEAT  N-01",0,10);tctx.restore();
+  tex.needsUpdate=true;
+}
+const ticketMat=new THREE.MeshStandardMaterial({map:tex,metalness:.75,roughness:.28});
+const edgeMat=new THREE.MeshStandardMaterial({color:0xb8913f,metalness:.9,roughness:.3});
+const ticket=new THREE.Mesh(new THREE.BoxGeometry(6,3,.06),[edgeMat,edgeMat,edgeMat,edgeMat,ticketMat,ticketMat]);
+scene.add(ticket);
+
+// gold dust
+const N=reduce?400:1600,pos=new Float32Array(N*3);
+for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*40;pos[i*3+1]=(Math.random()-.5)*24;pos[i*3+2]=(Math.random()-.5)*30-4}
+const dustGeo=new THREE.BufferGeometry();dustGeo.setAttribute("position",new THREE.BufferAttribute(pos,3));
+const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({color:0xe8c97a,size:.06,transparent:true,opacity:.8}));
+scene.add(dust);
+
+// light beam (projector)
+const beam=new THREE.Mesh(new THREE.ConeGeometry(4,22,32,1,true),new THREE.MeshBasicMaterial({color:0xffe2a0,transparent:true,opacity:.05,side:THREE.DoubleSide,depthWrite:false}));
+beam.position.set(0,9,-6);beam.rotation.x=Math.PI*.1;scene.add(beam);
+
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<700?55:40;camera.updateProjectionMatrix()}
+addEventListener("resize",resize);resize();
+
+let t0=null,phase="idle";
+function loop(now){
+  requestAnimationFrame(loop);
+  const t=now/1000;
+  dust.rotation.y=t*.01;dust.position.y=Math.sin(t*.2)*.3;
+  if(phase==="idle"){ticket.rotation.set(Math.sin(t*.5)*.15,t*.35,Math.sin(t*.3)*.05);camera.position.z=14}
+  else{
+    const e=(now-t0)/1000;
+    // dolly in, then ticket spins and settles facing camera, then drifts back for scenes
+    const z=e<6?14-6*ease(Math.min(e/6,1)):e<22?8:8+5*ease(Math.min((e-22)/3,1));
+    camera.position.z=z;
+    const spin=e<8?(1-ease(Math.min(e/8,1)))*Math.PI*4:0;
+    ticket.rotation.y=spin+Math.sin(e*.6)*.12;ticket.rotation.x=Math.sin(e*.4)*.08;
+    ticket.position.y=e>13?Math.min((e-13)/2,1)*2.6:0;
+    ticket.scale.setScalar(e>13?1-.35*Math.min((e-13)/2,1):1);
+  }
+  renderer.render(scene,camera);
+}
+const ease=x=>1-Math.pow(1-x,3);
+requestAnimationFrame(loop);
+
+/* ---------- timeline ---------- */
+let timers=[];
+function show(id,on){$(id).classList.toggle("on",on)}
+function play(){
+  timers.forEach(clearTimeout);timers=[];
+  ["c1","c2","c3","final"].forEach(id=>show(id,false));
+  show("start",false);$("bars").classList.add("open");$("replay").hidden=true;
+  phase="play";t0=performance.now();
+  const at=(s,f)=>timers.push(setTimeout(f,s*1000));
+  if(reduce){show("c3",true);show("final",false);at(1,()=>{show("c3",false);show("final",true);$("replay").hidden=false});return}
+  at(1,()=>show("c1",true));at(4,()=>show("c1",false));
+  at(9,()=>show("c2",true));at(12.5,()=>show("c2",false));
+  at(14,()=>show("c3",true));at(22,()=>show("c3",false));
+  at(23.5,()=>{show("final",true);$("replay").hidden=false});
+}
+$("go").addEventListener("click",play);
+$("replay").addEventListener("click",play);
+$("who").addEventListener("change",e=>{key=e.target.value;applyLead();timers.forEach(clearTimeout);["c1","c2","c3","final"].forEach(id=>show(id,false));show("start",true);$("bars").classList.remove("open");phase="idle";$("replay").hidden=true});
+$("copy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText("nexauraconsultant@gmail.com");$("copy").textContent="Copied"}catch{const r=document.createRange();r.selectNodeContents(document.querySelector(".mail"));const s=getSelection();s.removeAllRanges();s.addRange(r)}});
+document.fonts&&document.fonts.ready.then(applyLead);applyLead();
+</script>
+</body></html>
